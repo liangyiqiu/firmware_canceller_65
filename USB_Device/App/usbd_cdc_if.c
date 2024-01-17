@@ -32,6 +32,7 @@
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 extern tap_handle_type_def htap[5];
+extern UART_HandleTypeDef huart3;
 /* USER CODE END PV */
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
@@ -279,6 +280,17 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 
       sic_update_tap(htap[i]);
     }
+
+  if(Buf[0]==0x04)
+  {
+    uint8_t ctl_buffer[3]={0xaa,0x00,0x00};
+    for(uint8_t i=0;i<5;i++)
+    {
+      ctl_buffer[1]=i;
+      ctl_buffer[2]=Buf[i+1];
+      HAL_UART_Transmit(&huart3,ctl_buffer,3,1000);
+    }
+  }
 
   if(Buf[0]==0xaa)
     CDC_Transmit_FS("canceller-65 version=0\n",24);
