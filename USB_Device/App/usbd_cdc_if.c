@@ -283,13 +283,13 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 
   if(Buf[0]==0x04)
   {
-    uint8_t ctl_buffer[3]={0xaa,0x00,0x00};
+    uint8_t ctl_buffer[2]={0xaa,0x00};
     for(uint8_t i=0;i<5;i++)
     {
-      ctl_buffer[1]=i;
-      ctl_buffer[2]=Buf[i+1];
-      HAL_UART_Transmit(&huart3,ctl_buffer,3,1000);
+      if(Buf[i+1]!=0)
+        ctl_buffer[1]|=0x01<<i;
     }
+    HAL_UART_Transmit(&huart3,ctl_buffer,3,1000);
   }
 
   if(Buf[0]==0xaa)
