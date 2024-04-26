@@ -294,8 +294,8 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 
   if(Buf[0]==0xaa)
     CDC_Transmit_FS("canceller-65 version=0\n",24);
-	
-	CDC_Transmit_FS(Buf,*Len);
+	uint8_t done_flag=0xaa;
+	CDC_Transmit_FS(&done_flag,1);
   HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_0);
 
   return (USBD_OK);
